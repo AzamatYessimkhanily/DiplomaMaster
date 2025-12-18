@@ -21,8 +21,8 @@
       --radius: 22px;
       --shadow: 0 22px 90px rgba(0,0,0,0.58);
 
-      --w: min(1320px, calc(100vw - 64px));
-      --h: min(760px, calc(100vh - 96px));
+      --w: min(1320px, calc(100vw - 32px));
+      --h: min(760px, calc(100vh - 48px));
       --pad: 28px;
 
       --title: clamp(30px, 3.8vw, 58px);
@@ -32,8 +32,8 @@
       --ease: cubic-bezier(.2,.9,.2,1);
       --ease2: cubic-bezier(.16,1,.3,1);
 
-      /* выставляется JS-ом */
-      --chromeH: 92px;
+      /* Высота шапки по умолчанию (JS уточнит) */
+      --chromeH: 140px;
     }
 
     *{ box-sizing:border-box; }
@@ -50,7 +50,6 @@
       overflow:hidden;
     }
 
-    /* Animated aura */
     .bg-orb{
       position:fixed; inset:-22vmax;
       background: conic-gradient(from 110deg,
@@ -66,7 +65,6 @@
     }
     @keyframes spin{ to{ transform:rotate(360deg);} }
 
-    /* Fine grain */
     .grain{
       position: fixed; inset:0;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
@@ -79,7 +77,7 @@
       height:100%;
       display:grid;
       place-items:center;
-      padding: 28px;
+      padding: 16px;
       position:relative;
       z-index:1;
     }
@@ -97,7 +95,6 @@
       isolation: isolate;
     }
 
-    /* premium border glow */
     .deck:before{
       content:"";
       position:absolute; inset:-1px;
@@ -117,7 +114,6 @@
       z-index: 1;
     }
 
-    /* tech lines overlay */
     .deck:after{
       content:"";
       position:absolute; inset:0;
@@ -144,14 +140,17 @@
         12px
         calc(16px + env(safe-area-inset-left));
 
-      background: linear-gradient(180deg, rgba(0,0,0,0.44), rgba(0,0,0,0.12), transparent);
+      background: linear-gradient(180deg, rgba(0,0,0,0.65), rgba(0,0,0,0.25), transparent);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid rgba(255,255,255,0.08);
       z-index: 10;
+      min-height: 80px; /* Чтобы не сплющивалось */
     }
 
     .brand{
-      display:flex; align-items:center; gap:10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
       font-weight: 800;
       letter-spacing: 0.2px;
       user-select:none;
@@ -192,6 +191,10 @@
       color: rgba(255,255,255,0.86);
       font-size: 13px;
       transition: transform 140ms var(--ease), background 140ms var(--ease), border-color 140ms var(--ease);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      text-decoration:none;
     }
     .btn:hover{
       transform: translateY(-1px);
@@ -199,7 +202,16 @@
       border-color: rgba(255,255,255,0.18);
     }
 
-    /* Progress */
+    .btn-primary{
+      border-color: rgba(255,255,255,0.18);
+      background: linear-gradient(135deg, rgba(124,92,255,0.32), rgba(55,215,255,0.22), rgba(0,255,168,0.16));
+      box-shadow: 0 10px 40px rgba(0,0,0,0.30);
+      color: rgba(255,255,255,0.92);
+    }
+    .btn-primary:hover{
+      background: linear-gradient(135deg, rgba(124,92,255,0.40), rgba(55,215,255,0.28), rgba(0,255,168,0.20));
+    }
+
     .progress{
       position:absolute; left:0; right:0; bottom:0;
       height: 5px;
@@ -216,17 +228,17 @@
     /* Slides wrapper */
     .slides{
       position:absolute; inset:0;
-      /* ВАЖНО: отступ сверху = реальная высота шапки */
+      /* ПРАВКА: Увеличенный отступ сверху, чтобы шапка точно не закрывала контент */
       padding:
-        calc(var(--chromeH) + 18px)
+        max(calc(var(--chromeH) + 60px), 180px)
         18px
         18px
         18px;
+
       perspective: 1200px;
       z-index: 2;
     }
 
-    /* slide base */
     .slide{
       position:absolute; inset: 18px;
       opacity:0;
@@ -251,15 +263,22 @@
         linear-gradient(180deg, rgba(255,255,255,0.060), rgba(255,255,255,0.030));
       border: 1px solid rgba(255,255,255,0.12);
       padding: var(--pad);
-      overflow:hidden;
+      overflow: auto;
+      overscroll-behavior: contain;
       position:relative;
       display:grid;
       grid-template-rows: auto 1fr auto;
       gap: 14px;
       box-shadow: 0 10px 45px rgba(0,0,0,0.22);
     }
+    .panel::-webkit-scrollbar{ width: 10px; }
+    .panel::-webkit-scrollbar-thumb{
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+      border: 2px solid rgba(0,0,0,0.18);
+    }
+    .panel::-webkit-scrollbar-track{ background: transparent; }
 
-    /* watermark slide number */
     .watermark{
       position:absolute;
       right: 18px;
@@ -335,7 +354,6 @@
       overflow:hidden;
     }
 
-    /* micro highlight corners */
     .card:before{
       content:"";
       position:absolute; inset:-40px;
@@ -346,7 +364,6 @@
     }
 
     .card > * { position:relative; z-index: 1; }
-
     .card strong{ color: rgba(255,255,255,0.92); }
     .mini{
       font-size: 13px;
@@ -409,7 +426,7 @@
       color: transparent;
     }
 
-    /* Images: no crop + smart height */
+    /* Стиль для обычных картинок */
     .img{
       width: 100%;
       border-radius: 18px;
@@ -417,10 +434,8 @@
       background: rgba(0,0,0,0.22);
       overflow:hidden;
       position:relative;
-
       aspect-ratio: auto;
       height: clamp(300px, 52vh, 600px);
-
       display:grid;
       place-items:center;
       cursor: zoom-in;
@@ -431,7 +446,6 @@
       border-color: rgba(255,255,255,0.18);
       background: rgba(0,0,0,0.28);
     }
-
     .img img{
       width:100%;
       height:100%;
@@ -448,6 +462,23 @@
       font-size: 13px;
       background: rgba(255,255,255,0.04);
     }
+
+    /* ПРАВКА: Специальный стиль для QR-кода на первом слайде */
+    .qr-style {
+        background: white !important; /* Белый фон для контраста */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px !important; /* Отступ внутри */
+    }
+    .qr-style img {
+        object-fit: contain !important;
+        width: 80% !important;
+        height: 80% !important;
+        filter: none !important; /* Убираем фильтры чтобы код читался */
+        padding: 0 !important;
+    }
+
 
     .hint{
       display:flex;
@@ -470,7 +501,6 @@
       color: rgba(255,255,255,0.86);
     }
 
-    /* Appear animation */
     .appear{
       opacity:0;
       transform: translateY(16px);
@@ -489,7 +519,6 @@
     [data-step="5"]{ animation-delay: 560ms; }
     [data-step="6"]{ animation-delay: 700ms; }
 
-    /* Right nav dots */
     .dots{
       position:absolute;
       right: 12px;
@@ -521,7 +550,6 @@
       transform: scale(1.28);
     }
 
-    /* Lightbox (zoom) */
     .lightbox{
       position: fixed;
       inset: 0;
@@ -567,21 +595,24 @@
     }
     .lightboxClose:hover{ background: rgba(255,255,255,0.12); }
 
-    /* Compact mode */
     body.compact p, body.compact ul{ font-size: clamp(14px, 1.1vw, 16px); }
     body.compact li{ margin: 8px 0; }
     body.compact .panel{ padding: 22px; }
     body.compact .img{ height: clamp(260px, 46vh, 520px); }
 
-    /* Responsive */
     @media (max-width: 980px){
       :root{ --w: calc(100vw - 18px); --h: calc(100vh - 18px); }
-      .slides{ padding: calc(var(--chromeH) + 16px) 10px 10px 10px; }
+      .slides{ padding: calc(var(--chromeH) + 26px) 10px 10px 10px; }
       .slide{ inset: 10px; }
       .grid2{ grid-template-columns: 1fr; }
       .pill{ max-width: 66vw; }
       .dots{ display:none; }
       .watermark{ font-size: 56px; }
+    }
+
+    .slide[data-title="Титульный лист"] h1{
+      font-size: clamp(28px, 3.2vw, 52px);
+      line-height: 1.06;
     }
   </style>
 </head>
@@ -601,17 +632,24 @@
         <div class="meta">
           <div class="pill" id="titlePill">Титульный лист</div>
           <div class="pill" id="counter">1 / 12</div>
+
+          <a class="btn btn-primary" id="demoBtn"
+             href="https://diplomamaster-twucbyhar3ubauditcf6pv.streamlit.app/"
+             target="_blank" rel="noopener"
+             title="Открыть live-демо (Streamlit)">
+            🚀 Live Demo
+          </a>
+          <button class="btn" id="qrBtn" title="QR-код (откроется image.png)">QR</button>
+
           <button class="btn" id="compactBtn" title="Компактный текст (C)">C</button>
           <button class="btn" id="fsBtn" title="Fullscreen (F)">F</button>
         </div>
       </div>
 
-      <!-- dots nav -->
       <div class="dots" id="dots" aria-label="Навигация по слайдам"></div>
 
       <div class="slides" id="slides">
 
-        <!-- SLIDE 1 -->
         <section class="slide active" data-title="Титульный лист">
           <div class="panel">
             <div class="watermark">01</div>
@@ -629,11 +667,30 @@
                   <div class="mini"><strong>Специальность:</strong> 7M06138 — «Информационные системы»</div>
                   <div class="mini" style="margin-top:10px;"><strong>Выполнил:</strong> Магистрант Есимханулы А.</div>
                   <div class="mini" style="margin-top:10px;"><strong>Научный руководитель:</strong> Серимбетов Б.А., магистр, ст. преподаватель</div>
+
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Live-демо системы:</strong><br/>
+                      Нажмите <strong>🚀 Live Demo</strong> вверху или откройте по QR (кнопка <strong>QR</strong>).
+                    </p>
+                  </div>
                 </div>
+
                 <div class="card kpi">
                   <div class="mini">Фокус работы</div>
                   <div class="num">ML-скоринг</div>
                   <div class="mini">Интеллектуальная СППР для оценки кредитного риска</div>
+
+                  <div class="img qr-style" style="height: clamp(220px, 30vh, 320px); margin-top:12px;" data-zoom>
+                    <img alt="QR (image.png)" src="image.png" loading="eager" decoding="async"
+                         onerror="this.remove(); this.parentElement.querySelector('.ph').style.display='block';">
+                    <div class="ph" style="display:none; color:black;">Положи рядом файл: <strong>image.png</strong> (QR-код)</div>
+                  </div>
+
+                  <a class="btn btn-primary" style="justify-content:center; margin-top:10px;"
+                     href="https://diplomamaster-twucbyhar3ubauditcf6pv.streamlit.app/"
+                     target="_blank" rel="noopener">
+                    🚀 Открыть демо
+                  </a>
                 </div>
               </div>
             </div>
@@ -645,7 +702,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 2 -->
         <section class="slide" data-title="Введение и проблематика">
           <div class="panel">
             <div class="watermark">02</div>
@@ -688,7 +744,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 3 -->
         <section class="slide" data-title="Цель и научная новизна">
           <div class="panel">
             <div class="watermark">03</div>
@@ -730,7 +785,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 4 -->
         <section class="slide" data-title="Генерация данных и настройка системы">
           <div class="panel">
             <div class="watermark">04</div>
@@ -773,7 +827,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 5 -->
         <section class="slide" data-title="Аналитика портфеля (EDA)">
           <div class="panel">
             <div class="watermark">05</div>
@@ -814,7 +867,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 6 -->
         <section class="slide" data-title="Анализ распределения рисков">
           <div class="panel">
             <div class="watermark">06</div>
@@ -852,7 +904,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 7 -->
         <section class="slide" data-title="Корреляционный анализ">
           <div class="panel">
             <div class="watermark">07</div>
@@ -890,7 +941,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 8 -->
         <section class="slide" data-title="Результаты обучения модели">
           <div class="panel">
             <div class="watermark">08</div>
@@ -930,7 +980,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 9 -->
         <section class="slide" data-title="Демо: одобрение заявки">
           <div class="panel">
             <div class="watermark">09</div>
@@ -951,6 +1000,10 @@
                   <div class="callout" style="margin-top:12px;">
                     <p><strong>Результат:</strong> вероятность дефолта <strong>0%</strong> → <strong>«ОДОБРЕНО»</strong>. Решение мгновенно.</p>
                   </div>
+
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Live-демо:</strong> открой верхнюю кнопку <strong>🚀 Live Demo</strong> и покажи этот кейс прямо в приложении.</p>
+                  </div>
                 </div>
 
                 <div class="img appear" data-step="4" data-zoom>
@@ -968,7 +1021,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 10 -->
         <section class="slide" data-title="Демо: отказ в кредите">
           <div class="panel">
             <div class="watermark">10</div>
@@ -1006,7 +1058,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 11 -->
         <section class="slide" data-title="Инспектор данных и прозрачность">
           <div class="panel">
             <div class="watermark">11</div>
@@ -1044,7 +1095,6 @@
           </div>
         </section>
 
-        <!-- SLIDE 12 -->
         <section class="slide" data-title="Заключение">
           <div class="panel">
             <div class="watermark">12</div>
@@ -1092,7 +1142,6 @@
     </div>
   </div>
 
-  <!-- Lightbox -->
   <div class="lightbox" id="lightbox" aria-hidden="true">
     <div class="lightboxCard" role="dialog" aria-modal="true">
       <button class="lightboxClose" id="lightboxClose">Esc</button>
@@ -1111,6 +1160,8 @@
     const fsBtn = document.getElementById("fsBtn");
     const dots = document.getElementById("dots");
 
+    const qrBtn = document.getElementById("qrBtn");
+
     const lightbox = document.getElementById("lightbox");
     const lightboxImg = document.getElementById("lightboxImg");
     const lightboxClose = document.getElementById("lightboxClose");
@@ -1118,14 +1169,21 @@
     let index = 0;
     let wheelLock = false;
 
-    // ===== FIX: always compute real chrome height to avoid overlap =====
     function setChromeHeight(){
       const rect = chrome.getBoundingClientRect();
       const h = Math.ceil(rect.height);
       document.documentElement.style.setProperty("--chromeH", `${h}px`);
     }
 
-    // restart appear animations
+    // чтобы гарантированно убрать перекрытие после шрифтов/ресайза
+    function hardRecalcChrome(){
+      setChromeHeight();
+      requestAnimationFrame(() => {
+        setChromeHeight();
+        requestAnimationFrame(setChromeHeight);
+      });
+    }
+
     function restartAppear(activeSlide){
       activeSlide.querySelectorAll(".appear").forEach(el => {
         el.style.animation = "none";
@@ -1134,7 +1192,6 @@
       });
     }
 
-    // smart images sizing (portrait / ultra-wide)
     function smartImages(){
       document.querySelectorAll(".slide.active .img img").forEach((img) => {
         const apply = () => {
@@ -1142,16 +1199,13 @@
           const box = img.closest(".img");
           if (!box) return;
 
-          // defaults
           box.style.height = "clamp(300px, 52vh, 600px)";
           img.style.padding = "10px";
 
-          // very portrait
           if (r < 0.85){
             box.style.height = "clamp(360px, 62vh, 720px)";
             img.style.padding = "14px";
           }
-          // very wide
           if (r > 1.9){
             box.style.height = "clamp(260px, 42vh, 480px)";
             img.style.padding = "10px";
@@ -1163,7 +1217,6 @@
       });
     }
 
-    // dots nav build
     function buildDots(){
       dots.innerHTML = "";
       slides.forEach((s, i) => {
@@ -1202,7 +1255,7 @@
       bar.style.width = `${((index+1)/slides.length)*100}%`;
 
       updateDots();
-      setChromeHeight();       // важно: на всякий случай
+      hardRecalcChrome();
       restartAppear(slides[index]);
       smartImages();
     }
@@ -1210,7 +1263,6 @@
     function next(){ setActive(index + 1, +1); }
     function prev(){ setActive(index - 1, -1); }
 
-    // ===== Lightbox =====
     function openLightbox(src){
       if (!src) return;
       lightboxImg.src = src;
@@ -1231,12 +1283,14 @@
       });
     });
 
+    // NEW: QR button opens image.png
+    qrBtn?.addEventListener("click", () => openLightbox("image.png"));
+
     lightbox.addEventListener("click", (e) => {
       if (e.target === lightbox) closeLightbox();
     });
     lightboxClose.addEventListener("click", closeLightbox);
 
-    // keyboard
     window.addEventListener("keydown", (e) => {
       const k = e.key;
 
@@ -1260,7 +1314,7 @@
       if (k.toLowerCase() === "c"){
         e.preventDefault();
         document.body.classList.toggle("compact");
-        setChromeHeight();
+        hardRecalcChrome();
         smartImages();
         return;
       }
@@ -1278,7 +1332,6 @@
       }
     });
 
-    // wheel navigation
     window.addEventListener("wheel", (e) => {
       if (wheelLock) return;
       wheelLock = true;
@@ -1289,7 +1342,6 @@
       else prev();
     }, { passive: true });
 
-    // touch swipe
     let sx=0, sy=0;
     window.addEventListener("touchstart", (e) => {
       sx = e.touches[0].clientX;
@@ -1304,10 +1356,9 @@
       }
     }, { passive:true });
 
-    // buttons
     compactBtn.addEventListener("click", () => {
       document.body.classList.toggle("compact");
-      setChromeHeight();
+      hardRecalcChrome();
       smartImages();
     });
     fsBtn.addEventListener("click", () => {
@@ -1315,14 +1366,13 @@
       else document.exitFullscreen?.();
     });
 
-    // subtle parallax (premium)
     let raf = null;
     window.addEventListener("mousemove", (e) => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = null;
         const r = deck.getBoundingClientRect();
-        const x = (e.clientX - (r.left + r.width/2)) / r.width;   // -0.5..0.5
+        const x = (e.clientX - (r.left + r.width/2)) / r.width;
         const y = (e.clientY - (r.top + r.height/2)) / r.height;
         deck.style.transform = `translateZ(0) rotateY(${x*2.0}deg) rotateX(${(-y)*1.6}deg)`;
       });
@@ -1331,15 +1381,20 @@
       deck.style.transform = "translateZ(0)";
     });
 
-    // handle resize & font changes safely
-    const ro = new ResizeObserver(() => setChromeHeight());
+    const ro = new ResizeObserver(() => hardRecalcChrome());
     ro.observe(chrome);
 
     // init
-    setChromeHeight();
+    hardRecalcChrome();
     buildDots();
     setActive(0, +1);
     smartImages();
+
+    // extra: after fonts/images load
+    window.addEventListener("load", () => hardRecalcChrome());
+    if (document.fonts && document.fonts.ready){
+      document.fonts.ready.then(() => hardRecalcChrome());
+    }
   </script>
 </body>
 </html>
