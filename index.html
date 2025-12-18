@@ -1,0 +1,1345 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Защита диссертации — презентация</title>
+
+  <style>
+    :root{
+      --bg0:#050814;
+      --bg1:#070A12;
+
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.68);
+      --muted2: rgba(255,255,255,0.55);
+
+      --accent:#7C5CFF;
+      --accent2:#37D7FF;
+      --accent3:#00FFA8;
+
+      --radius: 22px;
+      --shadow: 0 22px 90px rgba(0,0,0,0.58);
+
+      --w: min(1320px, calc(100vw - 64px));
+      --h: min(760px, calc(100vh - 96px));
+      --pad: 28px;
+
+      --title: clamp(30px, 3.8vw, 58px);
+      --h2: clamp(26px, 3.0vw, 46px);
+      --p: clamp(15px, 1.35vw, 18px);
+
+      --ease: cubic-bezier(.2,.9,.2,1);
+      --ease2: cubic-bezier(.16,1,.3,1);
+
+      /* выставляется JS-ом */
+      --chromeH: 92px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      background:
+        radial-gradient(1200px 900px at 15% 10%, rgba(124,92,255,0.23), transparent 60%),
+        radial-gradient(1000px 800px at 85% 18%, rgba(55,215,255,0.18), transparent 55%),
+        radial-gradient(1000px 600px at 55% 110%, rgba(255,255,255,0.08), transparent 65%),
+        linear-gradient(180deg, var(--bg0), var(--bg1));
+      color:var(--text);
+      overflow:hidden;
+    }
+
+    /* Animated aura */
+    .bg-orb{
+      position:fixed; inset:-22vmax;
+      background: conic-gradient(from 110deg,
+        rgba(124,92,255,0.22),
+        rgba(55,215,255,0.14),
+        rgba(0,255,168,0.10),
+        rgba(255,255,255,0.06),
+        rgba(124,92,255,0.22));
+      filter: blur(85px);
+      opacity: .50;
+      animation: spin 18s linear infinite;
+      pointer-events:none;
+    }
+    @keyframes spin{ to{ transform:rotate(360deg);} }
+
+    /* Fine grain */
+    .grain{
+      position: fixed; inset:0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      opacity: .22;
+      pointer-events:none;
+    }
+
+    .app{
+      height:100%;
+      display:grid;
+      place-items:center;
+      padding: 28px;
+      position:relative;
+      z-index:1;
+    }
+
+    .deck{
+      width: var(--w);
+      height: var(--h);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,0.070), rgba(255,255,255,0.035));
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+      transform: translateZ(0);
+      isolation: isolate;
+    }
+
+    /* premium border glow */
+    .deck:before{
+      content:"";
+      position:absolute; inset:-1px;
+      border-radius: inherit;
+      background: linear-gradient(135deg,
+        rgba(124,92,255,0.20),
+        rgba(55,215,255,0.14),
+        rgba(0,255,168,0.10),
+        rgba(255,255,255,0.08));
+      opacity: .28;
+      pointer-events:none;
+      mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      padding: 1px;
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      z-index: 1;
+    }
+
+    /* tech lines overlay */
+    .deck:after{
+      content:"";
+      position:absolute; inset:0;
+      background:
+        radial-gradient(900px 280px at 18% 8%, rgba(124,92,255,0.18), transparent 55%),
+        radial-gradient(700px 240px at 92% 14%, rgba(55,215,255,0.12), transparent 55%),
+        linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: auto, auto, 80px 80px, 80px 80px;
+      opacity: .22;
+      pointer-events:none;
+      z-index: 0;
+    }
+
+    /* Top chrome */
+    .chrome{
+      position:absolute; left:0; right:0; top:0;
+      display:flex; align-items:center; justify-content:space-between;
+      gap: 12px;
+
+      padding:
+        calc(14px + env(safe-area-inset-top))
+        calc(16px + env(safe-area-inset-right))
+        12px
+        calc(16px + env(safe-area-inset-left));
+
+      background: linear-gradient(180deg, rgba(0,0,0,0.44), rgba(0,0,0,0.12), transparent);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      z-index: 10;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      user-select:none;
+      white-space: nowrap;
+    }
+    .dot{
+      width:10px; height:10px; border-radius:999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 0 7px rgba(124,92,255,0.14);
+    }
+
+    .meta{
+      display:flex; align-items:center; gap:10px;
+      color: var(--muted);
+      font-size: 13px;
+      user-select:none;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill{
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      max-width: 52vw;
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn{
+      cursor:pointer;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.86);
+      font-size: 13px;
+      transition: transform 140ms var(--ease), background 140ms var(--ease), border-color 140ms var(--ease);
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    /* Progress */
+    .progress{
+      position:absolute; left:0; right:0; bottom:0;
+      height: 5px;
+      background: rgba(255,255,255,0.07);
+      z-index: 12;
+    }
+    .bar{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+      transition: width 420ms var(--ease);
+    }
+
+    /* Slides wrapper */
+    .slides{
+      position:absolute; inset:0;
+      /* ВАЖНО: отступ сверху = реальная высота шапки */
+      padding:
+        calc(var(--chromeH) + 18px)
+        18px
+        18px
+        18px;
+      perspective: 1200px;
+      z-index: 2;
+    }
+
+    /* slide base */
+    .slide{
+      position:absolute; inset: 18px;
+      opacity:0;
+      pointer-events:none;
+      transform: translateY(18px) scale(0.985) rotateX(2.5deg);
+      transition: opacity 520ms var(--ease), transform 680ms var(--ease2);
+    }
+    .slide.active{
+      opacity:1;
+      pointer-events:auto;
+      transform: translateY(0) scale(1) rotateX(0);
+    }
+    .slide.out-left{ opacity:0; transform: translateX(-46px) scale(0.985) rotateY(6deg); }
+    .slide.out-right{ opacity:0; transform: translateX(46px) scale(0.985) rotateY(-6deg); }
+
+    .panel{
+      height:100%;
+      border-radius: calc(var(--radius) - 6px);
+      background:
+        radial-gradient(900px 280px at 16% 0%, rgba(124,92,255,0.20), transparent 55%),
+        radial-gradient(700px 240px at 92% 10%, rgba(55,215,255,0.14), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,0.060), rgba(255,255,255,0.030));
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: var(--pad);
+      overflow:hidden;
+      position:relative;
+      display:grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+      box-shadow: 0 10px 45px rgba(0,0,0,0.22);
+    }
+
+    /* watermark slide number */
+    .watermark{
+      position:absolute;
+      right: 18px;
+      bottom: 12px;
+      font-size: 72px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      color: rgba(255,255,255,0.06);
+      pointer-events:none;
+      z-index: 1;
+    }
+
+    .header{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 14px;
+      position:relative;
+      z-index:2;
+    }
+
+    .kicker{
+      font-size: 13px;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 6px;
+    }
+
+    h1,h2,h3{ margin:0; line-height:1.08; }
+    h1{ font-size: var(--title); letter-spacing: -0.7px; }
+    h2{
+      font-size: var(--h2);
+      letter-spacing: -0.5px;
+      position: relative;
+    }
+    h2:after{
+      content:"";
+      display:block;
+      height: 3px;
+      width: 150px;
+      margin-top: 10px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+      opacity: .95;
+    }
+
+    p{ margin:0; color: var(--muted); font-size: var(--p); line-height:1.60; }
+    ul{ margin:0; padding-left: 22px; color: var(--muted); font-size: var(--p); line-height:1.55; }
+    li{ margin: 10px 0; }
+
+    .content{
+      position:relative;
+      z-index:2;
+      display:grid;
+      gap: 16px;
+      align-content:start;
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      align-items:start;
+    }
+
+    .card{
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.11);
+      padding: 16px 16px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    /* micro highlight corners */
+    .card:before{
+      content:"";
+      position:absolute; inset:-40px;
+      background: radial-gradient(220px 160px at 14% 12%, rgba(124,92,255,0.16), transparent 60%),
+                  radial-gradient(220px 160px at 88% 18%, rgba(55,215,255,0.12), transparent 60%);
+      opacity: .75;
+      pointer-events:none;
+    }
+
+    .card > * { position:relative; z-index: 1; }
+
+    .card strong{ color: rgba(255,255,255,0.92); }
+    .mini{
+      font-size: 13px;
+      color: rgba(255,255,255,0.62);
+      line-height: 1.45;
+    }
+
+    .callout{
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: linear-gradient(180deg, rgba(255,255,255,0.085), rgba(255,255,255,0.040));
+      padding: 16px 16px 16px 18px;
+      position: relative;
+      overflow:hidden;
+    }
+    .callout:before{
+      content:"";
+      position:absolute; left:0; top:0; bottom:0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--accent), var(--accent2), var(--accent3));
+      border-radius: 18px 0 0 18px;
+      opacity: .95;
+    }
+    .callout p{ color: rgba(255,255,255,0.80); }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.84);
+      font-size: 13px;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .badge .b{
+      width:9px; height:9px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 0 0 6px rgba(55,215,255,0.10);
+    }
+
+    .kpi{
+      display:grid;
+      gap: 10px;
+    }
+    .kpi .num{
+      font-size: clamp(26px, 2.6vw, 40px);
+      font-weight: 900;
+      letter-spacing: -0.8px;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.98),
+        rgba(124,92,255,0.88),
+        rgba(55,215,255,0.86),
+        rgba(0,255,168,0.76));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Images: no crop + smart height */
+    .img{
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.22);
+      overflow:hidden;
+      position:relative;
+
+      aspect-ratio: auto;
+      height: clamp(300px, 52vh, 600px);
+
+      display:grid;
+      place-items:center;
+      cursor: zoom-in;
+      transition: transform 180ms var(--ease), border-color 180ms var(--ease), background 180ms var(--ease);
+    }
+    .img:hover{
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.28);
+    }
+
+    .img img{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      padding: 10px;
+      display:block;
+      filter: saturate(1.05) contrast(1.03);
+    }
+    .img .ph{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px dashed rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.65);
+      font-size: 13px;
+      background: rgba(255,255,255,0.04);
+    }
+
+    .hint{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      color: var(--muted2);
+      font-size: 13px;
+      user-select:none;
+      position:relative;
+      z-index:2;
+    }
+    kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      padding: 4px 7px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.86);
+    }
+
+    /* Appear animation */
+    .appear{
+      opacity:0;
+      transform: translateY(16px);
+      filter: blur(7px);
+    }
+    .slide.active .appear{
+      animation: upIn 780ms var(--ease) forwards;
+    }
+    @keyframes upIn{
+      to{ opacity:1; transform: translateY(0); filter: blur(0); }
+    }
+    [data-step="1"]{ animation-delay: 70ms; }
+    [data-step="2"]{ animation-delay: 170ms; }
+    [data-step="3"]{ animation-delay: 290ms; }
+    [data-step="4"]{ animation-delay: 420ms; }
+    [data-step="5"]{ animation-delay: 560ms; }
+    [data-step="6"]{ animation-delay: 700ms; }
+
+    /* Right nav dots */
+    .dots{
+      position:absolute;
+      right: 12px;
+      top: calc(var(--chromeH) + 24px);
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      z-index: 20;
+      padding: 10px 8px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: rgba(0,0,0,0.16);
+      backdrop-filter: blur(12px);
+    }
+    .dotBtn{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.10);
+      cursor:pointer;
+      transition: transform 160ms var(--ease), background 160ms var(--ease), border-color 160ms var(--ease);
+    }
+    .dotBtn:hover{ transform: scale(1.22); border-color: rgba(255,255,255,0.34); }
+    .dotBtn.active{
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-color: rgba(255,255,255,0.35);
+      box-shadow: 0 0 0 6px rgba(124,92,255,0.10);
+      transform: scale(1.28);
+    }
+
+    /* Lightbox (zoom) */
+    .lightbox{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.68);
+      backdrop-filter: blur(8px);
+      display:none;
+      z-index: 999;
+      align-items:center;
+      justify-content:center;
+      padding: 28px;
+    }
+    .lightbox.open{ display:flex; }
+    .lightboxCard{
+      max-width: min(1200px, 96vw);
+      max-height: min(820px, 92vh);
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(10,12,18,0.58);
+      box-shadow: 0 30px 120px rgba(0,0,0,0.65);
+      overflow:hidden;
+      position:relative;
+      display:grid;
+    }
+    .lightboxCard img{
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 14px;
+    }
+    .lightboxClose{
+      position:absolute;
+      top: 10px;
+      right: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.86);
+      padding: 8px 10px;
+      cursor:pointer;
+      font-size: 13px;
+    }
+    .lightboxClose:hover{ background: rgba(255,255,255,0.12); }
+
+    /* Compact mode */
+    body.compact p, body.compact ul{ font-size: clamp(14px, 1.1vw, 16px); }
+    body.compact li{ margin: 8px 0; }
+    body.compact .panel{ padding: 22px; }
+    body.compact .img{ height: clamp(260px, 46vh, 520px); }
+
+    /* Responsive */
+    @media (max-width: 980px){
+      :root{ --w: calc(100vw - 18px); --h: calc(100vh - 18px); }
+      .slides{ padding: calc(var(--chromeH) + 16px) 10px 10px 10px; }
+      .slide{ inset: 10px; }
+      .grid2{ grid-template-columns: 1fr; }
+      .pill{ max-width: 66vw; }
+      .dots{ display:none; }
+      .watermark{ font-size: 56px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-orb"></div>
+  <div class="grain"></div>
+
+  <div class="app">
+    <div class="deck" id="deck">
+      <div class="chrome" id="chrome">
+        <div class="brand">
+          <div class="dot"></div>
+          <div>Защита диссертации</div>
+        </div>
+
+        <div class="meta">
+          <div class="pill" id="titlePill">Титульный лист</div>
+          <div class="pill" id="counter">1 / 12</div>
+          <button class="btn" id="compactBtn" title="Компактный текст (C)">C</button>
+          <button class="btn" id="fsBtn" title="Fullscreen (F)">F</button>
+        </div>
+      </div>
+
+      <!-- dots nav -->
+      <div class="dots" id="dots" aria-label="Навигация по слайдам"></div>
+
+      <div class="slides" id="slides">
+
+        <!-- SLIDE 1 -->
+        <section class="slide active" data-title="Титульный лист">
+          <div class="panel">
+            <div class="watermark">01</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Магистерская диссертация</div>
+                <h1 class="appear" data-step="2">РАЗРАБОТКА ИНТЕЛЛЕКТУАЛЬНОЙ СИСТЕМЫ ПОДДЕРЖКИ ПРИНЯТИЯ РЕШЕНИЙ<br/>НА ОСНОВЕ МАШИННОГО ОБУЧЕНИЯ</h1>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>Астана · 2025</span></div>
+            </div>
+
+            <div class="content">
+              <div class="grid2 appear" data-step="4">
+                <div class="card">
+                  <div class="mini"><strong>Специальность:</strong> 7M06138 — «Информационные системы»</div>
+                  <div class="mini" style="margin-top:10px;"><strong>Выполнил:</strong> Магистрант Есимханулы А.</div>
+                  <div class="mini" style="margin-top:10px;"><strong>Научный руководитель:</strong> Серимбетов Б.А., магистр, ст. преподаватель</div>
+                </div>
+                <div class="card kpi">
+                  <div class="mini">Фокус работы</div>
+                  <div class="num">ML-скоринг</div>
+                  <div class="mini">Интеллектуальная СППР для оценки кредитного риска</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>→</kbd>/<kbd>Space</kbd> — дальше · <kbd>←</kbd> — назад · <kbd>Z</kbd> — zoom</span>
+              <span class="mini">Слайд 1/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 2 -->
+        <section class="slide" data-title="Введение и проблематика">
+          <div class="panel">
+            <div class="watermark">02</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Контекст</div>
+                <h2 class="appear" data-step="2">Введение и проблематика</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>Почему это важно</span></div>
+            </div>
+
+            <div class="content">
+              <div class="callout appear" data-step="3">
+                <p><strong>Введение:</strong><br/>
+                  В современном мире принятие решений становится всё более сложным и ответственным процессом.
+                  Организации сталкиваются с необходимостью анализа больших объёмов данных, которые часто бывают противоречивыми и изменчивыми.
+                </p>
+              </div>
+
+              <div class="grid2 appear" data-step="4">
+                <div class="card">
+                  <p><strong>Проблема:</strong><br/>
+                    В таких условиях традиционные системы поддержки принятия решений (СППР) перестают быть достаточными.
+                    Их главный недостаток — они работают по жестким алгоритмам и не обладают возможностью адаптироваться или «обучаться» на новом опыте.
+                  </p>
+                </div>
+                <div class="card">
+                  <p><strong>Актуальность:</strong><br/>
+                    Развитие искусственного интеллекта и машинного обучения привело к созданию нового класса систем — интеллектуальных СППР.
+                    Они способны не только анализировать информацию, но и вырабатывать рекомендации, основанные на скрытых закономерностях.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>F</kbd> — fullscreen · <kbd>C</kbd> — компактно</span>
+              <span class="mini">Слайд 2/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 3 -->
+        <section class="slide" data-title="Цель и научная новизна">
+          <div class="panel">
+            <div class="watermark">03</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Постановка</div>
+                <h2 class="appear" data-step="2">Цель и научная новизна</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>Что нового</span></div>
+            </div>
+
+            <div class="content">
+              <div class="callout appear" data-step="3">
+                <p><strong>Цель работы:</strong><br/>
+                  Разработка программного комплекса интеллектуальной СППР для минимизации финансовых рисков при кредитовании.
+                  Система должна автоматически анализировать профиль заемщика и выявлять скрытые угрозы дефолта.
+                </p>
+              </div>
+
+              <div class="grid2 appear" data-step="4">
+                <div class="card">
+                  <p class="mini"><strong>Научная новизна (1):</strong></p>
+                  <p>В работе проведена систематизация подходов к проектированию и внедрению интеллектуальных систем.</p>
+                </div>
+                <div class="card">
+                  <p class="mini"><strong>Научная новизна (2):</strong></p>
+                  <p>
+                    Реализована гибридная модель, совмещающая логические правила бизнеса и предсказательные алгоритмы машинного обучения.
+                    Это позволяет достичь высокой точности прогноза при сохранении прозрачности логики принятия решений.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>Home</kbd> — начало · <kbd>End</kbd> — конец</span>
+              <span class="mini">Слайд 3/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 4 -->
+        <section class="slide" data-title="Генерация данных и настройка системы">
+          <div class="panel">
+            <div class="watermark">04</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Экспериментальная база</div>
+                <h2 class="appear" data-step="2">Генерация данных и настройка системы</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>5000 профилей</span></div>
+            </div>
+
+            <div class="content">
+              <div class="grid2">
+                <div class="card appear" data-step="3">
+                  <p><strong>Описание реализации:</strong><br/>
+                    Для проведения экспериментов был разработан модуль генерации синтетических данных.
+                    Было сформировано <strong>5000 уникальных профилей заемщиков</strong>, адаптированных под рынок Казахстана
+                    (доход в тенге, учет данных Первого кредитного бюро).
+                  </p>
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Панель управления:</strong><br/>
+                      Задаются параметры выборки и разделение данных (Test Split = 0.20).
+                      Используются <strong>Random Forest</strong> и <strong>Gradient Boosting</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <div class="img appear" data-step="4" data-zoom>
+                  <img alt="image_bd7383.png" src="image_bd7383.png"
+                       onerror="this.remove(); this.parentElement.querySelector('.ph').style.display='block';">
+                  <div class="ph" style="display:none;">Положи рядом файл: <strong>image_bd7383.png</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span>Клик по картинке = Zoom</span>
+              <span class="mini">Слайд 4/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 5 -->
+        <section class="slide" data-title="Аналитика портфеля (EDA)">
+          <div class="panel">
+            <div class="watermark">05</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Exploratory Data Analysis</div>
+                <h2 class="appear" data-step="2">Аналитика портфеля (EDA)</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>KPI портфеля</span></div>
+            </div>
+
+            <div class="content">
+              <div class="grid2">
+                <div class="card appear" data-step="3">
+                  <p><strong>Анализ ключевых показателей (KPI):</strong></p>
+                  <ul style="margin-top:10px;">
+                    <li><strong>Общий объем кредитования:</strong> 16.6 Миллиардов тенге.</li>
+                    <li><strong>Средний чек кредита:</strong> 4.8 Миллиона тенге.</li>
+                    <li><strong>Уровень дефолта (Risk Rate):</strong> 3.32%.</li>
+                  </ul>
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Вывод:</strong> показатели соответствуют стабильному портфелю — данные валидны и готовы к обучению.</p>
+                  </div>
+                </div>
+
+                <div class="img appear" data-step="4" data-zoom>
+                  <img alt="image_bd7674.png" src="image_bd7674.png"
+                       onerror="this.remove(); this.parentElement.querySelector('.ph').style.display='block';">
+                  <div class="ph" style="display:none;">Положи рядом файл: <strong>image_bd7674.png</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>Space</kbd> — следующий слайд</span>
+              <span class="mini">Слайд 5/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 6 -->
+        <section class="slide" data-title="Анализ распределения рисков">
+          <div class="panel">
+            <div class="watermark">06</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Риск-профиль</div>
+                <h2 class="appear" data-step="2">Анализ распределения рисков</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>FICO vs дефолт</span></div>
+            </div>
+
+            <div class="content">
+              <div class="grid2">
+                <div class="card appear" data-step="3">
+                  <p><strong>Гистограмма риска:</strong><br/>
+                    Распределение клиентов по скоринговому баллу (FICO). Цветом выделен статус дефолта.
+                  </p>
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Вывод:</strong> при FICO ниже 600 — высокая концентрация дефолтов. Зависимость корректно выявляется.</p>
+                  </div>
+                </div>
+
+                <div class="img appear" data-step="4" data-zoom>
+                  <img alt="image_bd7691.png" src="image_bd7691.png"
+                       onerror="this.remove(); this.parentElement.querySelector('.ph').style.display='block';">
+                  <div class="ph" style="display:none;">Положи рядом файл: <strong>image_bd7691.png</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>R</kbd> — перезапуск анимаций</span>
+              <span class="mini">Слайд 6/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 7 -->
+        <section class="slide" data-title="Корреляционный анализ">
+          <div class="panel">
+            <div class="watermark">07</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Feature Selection</div>
+                <h2 class="appear" data-step="2">Корреляционный анализ</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>9 признаков</span></div>
+            </div>
+
+            <div class="content">
+              <div class="grid2">
+                <div class="card appear" data-step="3">
+                  <p><strong>Отбор признаков:</strong><br/>
+                    Построена матрица корреляций Пирсона. Выявлена мультиколлинеарность «Сумма кредита» и «Доход».
+                  </p>
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Результат:</strong> оптимальный набор из <strong>9</strong> признаков → меньше шума, выше точность.</p>
+                  </div>
+                </div>
+
+                <div class="img appear" data-step="4" data-zoom>
+                  <img alt="image_bd76ca.jpg" src="image_bd76ca.jpg"
+                       onerror="this.remove(); this.parentElement.querySelector('.ph').style.display='block';">
+                  <div class="ph" style="display:none;">Положи рядом файл: <strong>image_bd76ca.jpg</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>C</kbd> — компактный режим</span>
+              <span class="mini">Слайд 7/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 8 -->
+        <section class="slide" data-title="Результаты обучения модели">
+          <div class="panel">
+            <div class="watermark">08</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Model Performance</div>
+                <h2 class="appear" data-step="2">Результаты обучения модели</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>ROC-AUC ≈ 1</span></div>
+            </div>
+
+            <div class="content">
+              <div class="grid2">
+                <div class="card appear" data-step="3">
+                  <p><strong>Метрики качества:</strong></p>
+                  <ul style="margin-top:10px;">
+                    <li><strong>Accuracy:</strong> 98.90%</li>
+                    <li><strong>ROC-AUC:</strong> 0.9981</li>
+                  </ul>
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Вывод:</strong> высокая разделяющая способность, Random Forest надёжен для скоринга.</p>
+                  </div>
+                </div>
+
+                <div class="img appear" data-step="4" data-zoom>
+                  <img alt="image_bd76ec.png" src="image_bd76ec.png"
+                       onerror="this.remove(); this.parentElement.querySelector('.ph').style.display='block';">
+                  <div class="ph" style="display:none;">Положи рядом файл: <strong>image_bd76ec.png</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>F</kbd> — fullscreen</span>
+              <span class="mini">Слайд 8/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 9 -->
+        <section class="slide" data-title="Демо: одобрение заявки">
+          <div class="panel">
+            <div class="watermark">09</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Demo</div>
+                <h2 class="appear" data-step="2">Демонстрация: одобрение заявки</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>✅ ОДОБРЕНО</span></div>
+            </div>
+
+            <div class="content">
+              <div class="grid2">
+                <div class="card appear" data-step="3">
+                  <p><strong>Сценарий №1: Надежный клиент</strong><br/>
+                    Доход 4.8 млн тенге, долговая нагрузка 0.3.
+                  </p>
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Результат:</strong> вероятность дефолта <strong>0%</strong> → <strong>«ОДОБРЕНО»</strong>. Решение мгновенно.</p>
+                  </div>
+                </div>
+
+                <div class="img appear" data-step="4" data-zoom>
+                  <img alt="image_bd770e.jpg" src="image_bd770e.jpg"
+                       onerror="this.remove(); this.parentElement.querySelector('.ph').style.display='block';">
+                  <div class="ph" style="display:none;">Положи рядом файл: <strong>image_bd770e.jpg</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>Z</kbd> — zoom (если картинка есть)</span>
+              <span class="mini">Слайд 9/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 10 -->
+        <section class="slide" data-title="Демо: отказ в кредите">
+          <div class="panel">
+            <div class="watermark">10</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Demo</div>
+                <h2 class="appear" data-step="2">Демонстрация: отказ в кредите</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>❌ ОТКАЗ</span></div>
+            </div>
+
+            <div class="content">
+              <div class="grid2">
+                <div class="card appear" data-step="3">
+                  <p><strong>Сценарий №2: Высокий риск</strong><br/>
+                    Скоринг 300, 50 просрочек, долговая нагрузка 1.0.
+                  </p>
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Результат:</strong> вероятность дефолта <strong>94%</strong> → <strong>«ОТКАЗ»</strong>. Предотвращение прямых убытков.</p>
+                  </div>
+                </div>
+
+                <div class="img appear" data-step="4" data-zoom>
+                  <img alt="image_bd826c.jpg" src="image_bd826c.jpg"
+                       onerror="this.remove(); this.parentElement.querySelector('.ph').style.display='block';">
+                  <div class="ph" style="display:none;">Положи рядом файл: <strong>image_bd826c.jpg</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>Esc</kbd> — закрыть zoom / выйти из fullscreen</span>
+              <span class="mini">Слайд 10/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 11 -->
+        <section class="slide" data-title="Инспектор данных и прозрачность">
+          <div class="panel">
+            <div class="watermark">11</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Audit</div>
+                <h2 class="appear" data-step="2">Инспектор данных и прозрачность</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>CSV export</span></div>
+            </div>
+
+            <div class="content">
+              <div class="grid2">
+                <div class="card appear" data-step="3">
+                  <p><strong>Модуль аудита:</strong><br/>
+                    Реализован «Инспектор базы данных» — доступ к реестру исторических заявок.
+                  </p>
+                  <div class="callout" style="margin-top:12px;">
+                    <p><strong>Функционал:</strong> обезличенные данные, вероятность дефолта + экспорт в <strong>CSV</strong> для отчетности/интеграций.</p>
+                  </div>
+                </div>
+
+                <div class="img appear" data-step="4" data-zoom>
+                  <img alt="image_bd8538.jpg" src="image_bd8538.jpg"
+                       onerror="this.remove(); this.parentElement.querySelector('.ph').style.display='block';">
+                  <div class="ph" style="display:none;">Положи рядом файл: <strong>image_bd8538.jpg</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span>Точки справа — быстрый прыжок по слайдам</span>
+              <span class="mini">Слайд 11/12</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- SLIDE 12 -->
+        <section class="slide" data-title="Заключение">
+          <div class="panel">
+            <div class="watermark">12</div>
+            <div class="header">
+              <div>
+                <div class="kicker appear" data-step="1">Conclusion</div>
+                <h2 class="appear" data-step="2">Заключение</h2>
+              </div>
+              <div class="badge appear" data-step="3"><span class="b"></span><span>98.9% accuracy</span></div>
+            </div>
+
+            <div class="content">
+              <div class="callout appear" data-step="3">
+                <p><strong>Итоги:</strong> разработан и реализован прототип интеллектуальной СППР.</p>
+              </div>
+
+              <div class="grid2 appear" data-step="4">
+                <div class="card">
+                  <p><strong>Результаты:</strong><br/>
+                    Точность классификации достигла <strong>98.9%</strong>, что превосходит традиционные методы скоринга.
+                  </p>
+                </div>
+                <div class="card">
+                  <p><strong>Перспективы:</strong><br/>
+                    Снижение человеческого фактора, уменьшение просрочки, адаптация к изменениям экономики.
+                  </p>
+                </div>
+              </div>
+
+              <div class="callout appear" data-step="5">
+                <p><strong>Спасибо за внимание!</strong> Готов ответить на вопросы.</p>
+              </div>
+            </div>
+
+            <div class="hint">
+              <span><kbd>End</kbd> — сюда · <kbd>Home</kbd> — в начало</span>
+              <span class="mini">Слайд 12/12</span>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="progress"><div class="bar" id="bar"></div></div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <div class="lightboxCard" role="dialog" aria-modal="true">
+      <button class="lightboxClose" id="lightboxClose">Esc</button>
+      <img id="lightboxImg" alt="zoom" src="" />
+    </div>
+  </div>
+
+  <script>
+    const deck = document.getElementById("deck");
+    const chrome = document.getElementById("chrome");
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const counter = document.getElementById("counter");
+    const bar = document.getElementById("bar");
+    const titlePill = document.getElementById("titlePill");
+    const compactBtn = document.getElementById("compactBtn");
+    const fsBtn = document.getElementById("fsBtn");
+    const dots = document.getElementById("dots");
+
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightboxImg");
+    const lightboxClose = document.getElementById("lightboxClose");
+
+    let index = 0;
+    let wheelLock = false;
+
+    // ===== FIX: always compute real chrome height to avoid overlap =====
+    function setChromeHeight(){
+      const rect = chrome.getBoundingClientRect();
+      const h = Math.ceil(rect.height);
+      document.documentElement.style.setProperty("--chromeH", `${h}px`);
+    }
+
+    // restart appear animations
+    function restartAppear(activeSlide){
+      activeSlide.querySelectorAll(".appear").forEach(el => {
+        el.style.animation = "none";
+        void el.offsetHeight;
+        el.style.animation = "";
+      });
+    }
+
+    // smart images sizing (portrait / ultra-wide)
+    function smartImages(){
+      document.querySelectorAll(".slide.active .img img").forEach((img) => {
+        const apply = () => {
+          const r = img.naturalWidth / img.naturalHeight;
+          const box = img.closest(".img");
+          if (!box) return;
+
+          // defaults
+          box.style.height = "clamp(300px, 52vh, 600px)";
+          img.style.padding = "10px";
+
+          // very portrait
+          if (r < 0.85){
+            box.style.height = "clamp(360px, 62vh, 720px)";
+            img.style.padding = "14px";
+          }
+          // very wide
+          if (r > 1.9){
+            box.style.height = "clamp(260px, 42vh, 480px)";
+            img.style.padding = "10px";
+          }
+        };
+
+        if (img.complete && img.naturalWidth) apply();
+        else img.addEventListener("load", apply, { once: true });
+      });
+    }
+
+    // dots nav build
+    function buildDots(){
+      dots.innerHTML = "";
+      slides.forEach((s, i) => {
+        const b = document.createElement("button");
+        b.className = "dotBtn";
+        b.title = `${i+1}: ${s.dataset.title || "Слайд"}`;
+        b.addEventListener("click", () => setActive(i, i > index ? +1 : -1));
+        dots.appendChild(b);
+      });
+      updateDots();
+    }
+
+    function updateDots(){
+      const btns = Array.from(dots.querySelectorAll(".dotBtn"));
+      btns.forEach((b, i) => b.classList.toggle("active", i === index));
+    }
+
+    function setActive(i, direction = 0){
+      const prev = index;
+      index = Math.max(0, Math.min(slides.length - 1, i));
+
+      slides.forEach((s, k) => {
+        s.classList.remove("out-left","out-right");
+        if (k === prev && k !== index){
+          if (direction > 0) s.classList.add("out-left");
+          if (direction < 0) s.classList.add("out-right");
+        }
+      });
+
+      slides.forEach((s, k) => s.classList.toggle("active", k === index));
+
+      const t = slides[index].dataset.title || `Слайд ${index+1}`;
+      titlePill.textContent = t;
+
+      counter.textContent = `${index+1} / ${slides.length}`;
+      bar.style.width = `${((index+1)/slides.length)*100}%`;
+
+      updateDots();
+      setChromeHeight();       // важно: на всякий случай
+      restartAppear(slides[index]);
+      smartImages();
+    }
+
+    function next(){ setActive(index + 1, +1); }
+    function prev(){ setActive(index - 1, -1); }
+
+    // ===== Lightbox =====
+    function openLightbox(src){
+      if (!src) return;
+      lightboxImg.src = src;
+      lightbox.classList.add("open");
+      lightbox.setAttribute("aria-hidden","false");
+    }
+    function closeLightbox(){
+      lightbox.classList.remove("open");
+      lightbox.setAttribute("aria-hidden","true");
+      lightboxImg.src = "";
+    }
+
+    // click-to-zoom on images
+    document.querySelectorAll("[data-zoom]").forEach(box => {
+      box.addEventListener("click", () => {
+        const img = box.querySelector("img");
+        if (img && img.getAttribute("src")) openLightbox(img.getAttribute("src"));
+      });
+    });
+
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+    lightboxClose.addEventListener("click", closeLightbox);
+
+    // keyboard
+    window.addEventListener("keydown", (e) => {
+      const k = e.key;
+
+      if (k === "Escape"){
+        if (lightbox.classList.contains("open")) { e.preventDefault(); closeLightbox(); return; }
+        if (document.fullscreenElement) { e.preventDefault(); document.exitFullscreen?.(); return; }
+      }
+
+      if (k === "ArrowRight" || k === "PageDown" || k === " " || k === "Enter"){
+        e.preventDefault(); next(); return;
+      }
+      if (k === "ArrowLeft" || k === "PageUp"){
+        e.preventDefault(); prev(); return;
+      }
+      if (k === "Home"){ e.preventDefault(); setActive(0, -1); return; }
+      if (k === "End"){ e.preventDefault(); setActive(slides.length-1, +1); return; }
+
+      if (k.toLowerCase() === "r"){
+        e.preventDefault(); restartAppear(slides[index]); return;
+      }
+      if (k.toLowerCase() === "c"){
+        e.preventDefault();
+        document.body.classList.toggle("compact");
+        setChromeHeight();
+        smartImages();
+        return;
+      }
+      if (k.toLowerCase() === "f"){
+        e.preventDefault();
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+        else document.exitFullscreen?.();
+        return;
+      }
+      if (k.toLowerCase() === "z"){
+        e.preventDefault();
+        const img = slides[index].querySelector(".img img");
+        if (img && img.getAttribute("src")) openLightbox(img.getAttribute("src"));
+        return;
+      }
+    });
+
+    // wheel navigation
+    window.addEventListener("wheel", (e) => {
+      if (wheelLock) return;
+      wheelLock = true;
+      setTimeout(() => wheelLock = false, 420);
+
+      if (Math.abs(e.deltaY) < 12) return;
+      if (e.deltaY > 0) next();
+      else prev();
+    }, { passive: true });
+
+    // touch swipe
+    let sx=0, sy=0;
+    window.addEventListener("touchstart", (e) => {
+      sx = e.touches[0].clientX;
+      sy = e.touches[0].clientY;
+    }, { passive:true });
+    window.addEventListener("touchend", (e) => {
+      const dx = e.changedTouches[0].clientX - sx;
+      const dy = e.changedTouches[0].clientY - sy;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40){
+        if (dx < 0) next();
+        else prev();
+      }
+    }, { passive:true });
+
+    // buttons
+    compactBtn.addEventListener("click", () => {
+      document.body.classList.toggle("compact");
+      setChromeHeight();
+      smartImages();
+    });
+    fsBtn.addEventListener("click", () => {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+      else document.exitFullscreen?.();
+    });
+
+    // subtle parallax (premium)
+    let raf = null;
+    window.addEventListener("mousemove", (e) => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = null;
+        const r = deck.getBoundingClientRect();
+        const x = (e.clientX - (r.left + r.width/2)) / r.width;   // -0.5..0.5
+        const y = (e.clientY - (r.top + r.height/2)) / r.height;
+        deck.style.transform = `translateZ(0) rotateY(${x*2.0}deg) rotateX(${(-y)*1.6}deg)`;
+      });
+    });
+    window.addEventListener("mouseleave", () => {
+      deck.style.transform = "translateZ(0)";
+    });
+
+    // handle resize & font changes safely
+    const ro = new ResizeObserver(() => setChromeHeight());
+    ro.observe(chrome);
+
+    // init
+    setChromeHeight();
+    buildDots();
+    setActive(0, +1);
+    smartImages();
+  </script>
+</body>
+</html>
